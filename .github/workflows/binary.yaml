@@ -59,17 +59,9 @@ jobs:
 
       - run: nix build ${{ matrix.installable }}
 
-      - name: Generate artifact attestation
-        id: certificate
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: "result/bin/dune"
-          show-summary: false
-
       - name: Extract artifact and attestation
         run: |
           mkdir -p ~/build/$ARCHIVE_DIR/
-          cp ${{ steps.certificate.outputs.bundle-path }} ~/build
           cp result/bin/dune ~/build/$ARCHIVE_DIR
           cp -r $GITHUB_WORKSPACE/dune-binary-distribution/env ~/build/$ARCHIVE_DIR
           cp -r $GITHUB_WORKSPACE/dune-binary-distribution/completions ~/build/$ARCHIVE_DIR
