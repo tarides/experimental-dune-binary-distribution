@@ -1,0 +1,367 @@
+open Component
+
+let header_info () =
+  <section class_="relative flex items-center justify-center overflow-hidden lg:h-96 bg-black lg:bg-transparent px-5 py-10 lg:p-0">
+    <img src="/static/img_camel_hero_banner.png"
+         alt="Hero Image"
+         class_="absolute inset-0 h-full w-full object-cover hidden lg:block" />
+
+    <div class_="absolute inset-0 bg-black opacity-40"></div>
+
+    <div class_="absolute inset-0"
+         style="background: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 7) 59%, rgba(0, 0, 0, 0) 100%);">
+    </div>
+
+    <div class_="w-lg flex flex-col px-4 text-white text-left z-10 p-4">
+       <h1 class_="w-full text-4xl font-bold">
+           "Setup OCaml with Dune in "
+           <span style="color: rgb(194, 79, 30);">"Under a Minute"</span>
+       </h1>
+       <p class_="max-w-banner text-lg text-white leading-7 mt-4">
+          "The Dune Developer Preview is an ongoing program that provides early access to new and experimental features in Dune and the broader OCaml Platform with an "
+           <span class_="text-primary-light">"experimental nightly release"</span>
+       </p>
+    </div>
+  </section>
+
+let warning () =
+  <div class_="w-full flex justify-center relative bg-warning/20 border-y border-warning px-5 lg:px-0">
+    <div class_="w-full sm:w-lg flex items-center justify-between p-4">
+        <Icons.info class_="stroke-warning mr-2" />
+        <span class_="flex-1 text-left">
+            "This Dune Install is only an "
+            <span class_="font-bold text-warning">
+            "EXPERIMENTAL NIGHTLY RELEASE"
+            </span>" of Dune"
+        </span>
+    </div>
+  </div>
+
+
+let getting_started ~install_url () =
+  <section id="download" class_="w-full flex justify-center pt-9 pb-12 px-5 lg:px-0">
+    <div class_="w-full lg:w-lg flex flex-col">
+    <h2 class_="mb-5">"Install Dune"</h2>
+    <h4>
+      <span class_="mr-2.5"><Icons.terminal /></span>
+      "Copy & Install"
+    </h4>
+    <Curl script=(Info.curl_with_sh install_url) />
+    <h3 class_="mt-10 mb-2.5">"Getting Started"</h3>
+    <p>"You can create and run your first hello-world program using Dune like this"</p>
+    <h4 class_="mt-2.5">
+      <span class_="mr-2.5"><Icons.terminal /></span>
+      "Run"
+    </h4>
+    <Code>
+"$ PROJECT=hello_world"
+"$ dune init proj \"$PROJECT\""
+"$ cd \"$PROJECT\""
+"$ dune pkg lock"
+"$ dune exec \"$PROJECT\""
+    </Code>
+    <h3 class_="mt-10 mb-2.5">"Editor Configuration"</h3>
+    <p>
+        "Here is how to configure some popular editors for OCaml using the Dune Developer Preview. Note that it is unnecessary to install "
+        <span class_="font-mono text-block-p">"ocaml-lsp-server"</span>
+        " as Dune will install it automatically."
+    </p>
+
+    <Details summary="Visual Studio Code" extend_class="mt-4" container_class="px-4 lg:px-14 py-1">
+        <div>
+            <p class_="mb-2.5">
+                "Install version 1.21.0 or higher of the "
+                <Link class_="hover:underline" href="https://marketplace.visualstudio.com/items?itemName=ocamllabs.ocaml-platform">"vscode-ocaml-platform"</Link>
+                " plugin for Visual Studio Code. By default it assumes that you'll be using Opam to install "
+                <span class_="font-mono text-block-p">"ocamllsp"</span>
+                ". To configure it to work with the Dune Developer Preview, add the following to your settings.json file:"
+            </p>
+            <Code>
+"// settings.json"
+"{"
+"  \"ocaml.sandbox\": {"
+"    \"kind\": \"custom\","
+"    \"template\": \"$prog $args\""
+"  }"
+"}"
+            </Code>
+        </div>
+    </Details>
+    <Details summary="Neovim" extend_class="mt-4" container_class="px-4 lg:px-14 py-1">
+        <div>
+            <p class_="mb-2.5">
+                "The easiest way to configure Neovim for OCaml is by installing the "
+                <Link class_="hover:underline" href="https://github.com/neovim/nvim-lspconfig">"lspconfig"</Link>
+                " package. The default configuration will work with the Dune Developer Preview, so just enable it with:"
+            </p>
+            <Code>
+"-- init.lua"
+"require'lspconfig'.ocamllsp.setup{}"
+            </Code>
+        </div>
+    </Details>
+    <Details summary="Emacs" extend_class="mt-4" container_class="px-4 lg:px-14 py-1">
+        <div>
+            <p class_="mb-2.5">
+                "Emacs users will need to add the Dune Developer Preview's bin directory to their "
+                <span class_="font-mono text-block-p">"exec-path"</span>
+                " and "
+                <span class_="font-mono text-block-p">"PATH"</span>
+                " variables. The rest of the configuration is the same as for regular OCaml. Here's a minimal example configuration for Emacs that uses "
+                <Link class_="hover:underline" href="https://www.gnu.org/software/emacs/manual/html_mono/use-package.html">"use-package"</Link>
+                " to install packages:"
+            </p>
+            <Code>
+"; init.el"
+"; add the dune developer preview bin path to exec-path and PATH"
+"(add-to-list 'exec-path \"~/.local/bin\" t)"
+"(setenv \"PATH\" (concat (expand-file-name \"~/.local/bin\") \":\" (getenv \"PATH\")))"
+" "
+"; mode for editing ocaml files"
+"(use-package tuareg)"
+" "
+"; lsp client mode"
+"(use-package lsp-mode"
+"  :init"
+"  ; start ocamllsp automatically for ocaml files"
+"  :hook ((tuareg-mode . lsp)))"
+            </Code>
+        </div>
+    </Details>
+    <Details summary="Zed" extend_class="mt-4" container_class="px-4 lg:px-14 py-1">
+        <div>
+            <p class_="mb-2.5">
+                "No manual configuration is necessary! Just install the OCaml extensions for Zed (you should get a pop-up the first time you edit an OCaml file)."
+            </p>
+        </div>
+    </Details>
+    <Note class_="">
+      <p class_="text-secondary">
+        "For more information on Dune and Package Management, check "
+        <Link class_="text-primary-light" href="https://dune.readthedocs.io/en/latest">"the Dune docs"</Link>
+        ", in particular the "
+        <Link class_="text-primary-light" href="https://dune.readthedocs.io/en/latest/tutorials/dune-package-management/index.html">"the package management tutorial"</Link>
+        " and the "
+        <Link class_="text-primary-light" href="https://dune.readthedocs.io/en/latest/explanation/package-management.html">"the explanation how it works"</Link>"."
+      </p>
+    </Note>
+  </div>
+  </section>
+
+
+
+let feedback () =
+  <section id="feedback" class_="w-full flex justify-center pt-9 pb-14 text-white/60 bg-gradient-to-r from-gradient-start to-gradient-end px-5 lg:px-0" >
+    <div class_="w-full lg:w-lg">
+    <h2 class_="flex flex-row items-center text-white mb-5">
+      <span>
+        <Icons.community class_="mr-2"/>
+      </span>
+      "Share Feedback"
+    </h2>
+    <p class_="mb-6 text-white/60">"We are excited to learn from your experience with the Dune Developer Preview, so feel encourage to tell us what you think"</p>
+    <div class_="w-full flex flex-col sm:flex-row flex-wrap items-center gap-10">
+      <LinkButton href="https://docs.google.com/forms/u/2/d/e/1FAIpQLSda-mOTHIdATTt_e9dFmNgUCy-fD55Qzr3bGGsxpfY_Ecfyxw/viewform?usp=send_form">
+        <p>
+          <Icons.pencil class_="mr-2.5" />
+          "Submit Feedback"
+        </p>
+      </LinkButton>
+
+      <LinkButton href="https://github.com/ocaml/dune/issues/new/choose">
+        <p>
+          <Icons.github class_="fill-white mr-2.5" />
+          "Open a GitHub Issue"
+        </p>
+      </LinkButton>
+    </div>
+  </div>
+  </section>
+
+let q_and_a = [
+    "What is the Dune Developer Preview?",
+    <div class_="flex flex-col gap-2">
+      <p>"The Dune Developer Preview is an ongoing program that provides early access to new and experimental features in Dune and the broader OCaml Platform. It's not limited to a single feature or time period – instead, it's a continuous initiative to involve the community in testing and refining upcoming developments."</p>
+      <p>"While it currently showcases Dune's new package management capabilities, the Developer Preview will continue to introduce and iterate on various features even after the package management system is fully integrated into stable releases."</p>
+      <p>"By participating in the Developer Preview, you'll have the opportunity to try out cutting-edge functionality, provide valuable feedback, and help shape the future of Dune and the OCaml ecosystem. We encourage users to think of the Developer Preview as a persistent \"beta channel\" for Dune and related tools, always offering a glimpse into what's coming next."</p>
+    </div>
+  ;  "Is it stable?", (<p>"No. For a stable release of OCaml, please follow the installation guide on "<Link href="https://ocaml.org">"OCaml.org"</Link>". The Developer Preview is an unstable distribution of Dune and, by nature, will always be unstable. However, its features will stabilise over time and move to a stable release of Dune. If you use the Developer Preview, expect bugs and please report them to "<Link href="https://github.com/ocaml/dune/issues">"ocaml/dune"</Link>"."</p>)
+  ; "Does it support Windows?", <p>"No, not yet. Watch this space for news!"</p>
+  ; "Can I build the Developer Preview of Dune from sources?",
+    <div class_="flex flex-col gap-2">
+      <p>"Yes. The only difference from a regular build from source is in a few
+      configuration flags. Please look in the Dune repository for complete instructions
+      on how to do a source build of Dune."
+      </p>
+      <p>"When configuring the build you'll want to enable the following flags:" </p>
+      <Code>
+"--enable-pkg-build-progress"
+"--enable-lock-dev-tool"
+</Code>
+    </div>
+  ; "Can I access these features from a version of Dune managed by opam?",
+    <div class_="flex flex-col gap-2">
+      <p>"Yes, but we can't guarantee they will work correctly since the Dune Developer Preview makes some assumptions for package management that aren't supported by opam."
+      </p>
+      <p>"To enable these features make sure you are pinning dune to the development version, and export the following environment variables: "
+      </p>
+      <Code>
+"$ opam pin add dune --dev"
+"$ export DUNE_CONFIG__PKG_BUILD_PROGRESS=enabled"
+"$ export DUNE_CONFIG__LOCK_DEV_TOOL=enabled"
+</Code>
+    </div>
+]
+
+let faq () =
+  <section id="faq" class_="w-full flex justify-center py-10 px-5 lg:px-0">
+  <div class_="w-full lg:w-lg flex flex-col gap-2">
+    <h2 class_="mb-7"> "Frequently Asked Questions" </h2>
+    (List.map
+      (fun (question, answer) -> (<Details container_class="px-4 lg:px-14 py-1" summary=question>answer</Details>)) q_and_a |> JSX.list)
+  </div>
+  </section>
+
+let installation_target ~base_url ~bundle target =
+  let open Metadata in
+  let title = Target.to_human_readable_string target in
+  let desc = Target.to_description target in
+  let targz = Bundle.to_download_file target in
+  let cert_href = Bundle.to_certificate_url bundle ~base_url ~target in
+  let tar_href = Bundle.to_download_url bundle ~base_url ~target  in
+  <li class_="w-[420px] flex flex-col justify-center items-end">
+    <div class_="w-full h-[140px] px-4 py-2 mb-2.5 gap-y-2.5 flex flex-col justify-center items-center border-[2px] border-solid border-primary-light rounded-md bg-white">
+      <h4 class_="font-bold">(JSX.string title)</h4>
+      <p class_="text-center">(JSX.string desc)</p>
+      <div class_="flex flex-row items-center justify-center">
+        <span class_="mr-2.5">
+          <Icons.download class_="stroke-primary-light" />
+        </span>
+        <Link class_="hover:underline" href=tar_href>(JSX.string targz)</Link>
+      </div>
+    </div>
+    <a class_="text-black underline hover:text-primary-light" href=cert_href>"Certificate"</a>
+  </li>
+
+let manual_installation ~base_url ~releases () =
+  <section id="manual-installation" class_="w-full flex justify-center border-t border-b border-black/20 py-10  bg-section-manual px-5 lg:px-0">
+    <div class_="w-full lg:w-lg flex flex-col gap-2 ">
+    <h2 class_="mb-2"> "Manual Installation" </h2>
+    <p class_="mb-5">
+      "In this section you’ll find instructions to manually install the Dune Developer Review, and verify the installation. This is recommended for advanced users, or if you want s understand where the binaries come from."
+    </p>
+    <h3 class_="mb-2.5"> "Featured Downloads" </h3>
+    <p class_="mb-4">
+      "This is the latest release of the Dune Developer Preview. See the "
+      <Link class_="text-[var(--accent)]" href="#release-history">"release history"</Link>
+      " section for all past releases."
+    </p>
+    <ul class_="flex flex-row gap-2.5 justify-around flex-wrap items-center align-center mb-5">
+      (let bundle: Metadata.Bundle.t = releases |> List.hd in
+      bundle.targets
+       |> List.map (installation_target ~base_url ~bundle)
+       |> JSX.list)
+    </ul>
+
+    <h3 class_="mb-2.5"> "Installing the Binary" </h3>
+    <p>
+      "After downloading a binary release of Dune, make it executable and place it somewhere reachable by your PATH:"
+    </p>
+    <h4 class_="mt-2.5">
+      <span class_="mr-2.5"><Icons.terminal /></span>
+      "Run"
+    </h4>
+    <Code>
+"$ tar xzf dune-<arch>.tar.gz"
+"$ mv dune-<arch>/dune ~/.local/bin/"
+    </Code>
+    <p class_="mt-2.5 mb-2.5">"You can verify your installation by running:"</p>
+    <Code>
+"$ dune --version"
+"Dune Developer Preview: build , git revision cc260345db57ab639db6363b2dc89072a1492832"
+    </Code>
+
+    <h3 class_="mt-5 mb-2.5"> "Verifying the Dune binary" </h3>
+    <p class_="mb-2.5">
+      <span>"To ensure trust in the binary distribution, we generate a build certificate associated with the Github Actions pipeline where the binaries are built. Once you download this certificate, you can use the "</span>
+      <span class_="font-mono text-block-p">"gh"</span>
+      <span>" tool to verify it with the following command: "</span>
+    </p>
+    <Code>[JSX.string "$ gh attestation verify ./dune -R ocaml-dune/binary-distribution --bundle attestation.jsonl"]</Code>
+  </div>
+  </section>
+
+
+let release_information ~base_url ~bundle ~target () =
+  let open Metadata in
+  let targz = Bundle.to_download_file target in
+  let cert_href = Bundle.to_certificate_url bundle ~base_url ~target in
+  let tar_href = Bundle.to_download_url bundle ~base_url ~target  in
+  let (arch, _, os) = Target.to_triple target in
+  <tr class_="odd:bg-tertiary/10">
+    <td class_="pl-2.5 lg:pl-14 border"><Link class_="hover:underline" href=tar_href>(JSX.string targz)</Link></td>
+    <td class_="py-2.5 pl-2.5 border">"Archive"</td>
+    <td class_="py-2.5 pl-2.5 border">(JSX.string os)</td>
+    <td class_="py-2.5 pl-2.5 border">(JSX.string arch)</td>
+    <td class_="py-2.5 pl-2.5 border">(String.sub bundle.commit 0 6 |> JSX.string)</td>
+    <td class_="py-2.5 pl-2.5 border">
+      <div class_="group w-full flex flex-raw gap-2.5 items-center">
+        <Icons.eye class_=" stroke-block-p group-hover:stroke-primary-light" />
+        <Link color="text-block-p" class_="underline group-hover:text-primary-light" href=cert_href>"View"</Link>
+      </div>
+    </td>
+  </tr>
+
+
+let release_history ~base_url ~releases () =
+  let open Metadata in
+  <section id="release-history" class_="w-full flex justify-center py-10 px-5 lg:px-0">
+    <div class_="w-full lg:w-lg flex flex-col gap-2 text-left">
+    <h2 class_="mb-4"> "Last Month Release History" </h2>
+    <p>
+      "Here is a list of the "
+      (JSX.int (List.length releases))
+      " latest releases of the Dune Developer Preview."
+    </p>
+    <div class_="w-full flex flex-col gap-4">
+    (
+      releases
+      |> List.map (fun (bundle: Bundle.t) ->
+          let date = Bundle.get_date_string_from ~prefix:"nightly-" bundle in
+          let summary = Format.sprintf "dune %s" date in
+          let files = bundle.targets |> List.map (fun (target: Target.t) -> (<release_information base_url bundle target />)) in
+          (<Details summary container_class="w-full overflow-scroll">
+             <table class_="w-full pb-4 border-collapse border">
+                <thead class_="font-normal border">
+                  <tr>
+                    <th class_="pl-2.5 lg:pl-14 py-2.5 border font-normal">"File Name"</th>
+                    <th class_="pl-2.5 py-2.5 border font-normal">"Kind"</th>
+                    <th class_="pl-2.5 py-2.5 border font-normal">"OS"</th>
+                    <th class_="pl-2.5 py-2.5 border font-normal">"Arch"</th>
+                    <th class_="pl-2.5 py-2.5 border font-normal">"Commit"</th>
+                    <th class_="pl-2.5 py-2.5 border font-normal">"Certificate"</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  (JSX.list files)
+                </tbody>
+              </table>
+          </Details>)
+      ) |> JSX.list
+    )
+    </div>
+  </div>
+  </section>
+
+let page ~base_url ~releases () =
+  let releases = Core.List.take 30 releases in
+  let install_url = Filename.concat base_url "install" in
+  <main class_="flex flex-col w-full">
+    <header_info />
+    <warning />
+    <getting_started install_url />
+    <feedback />
+    <faq />
+    <manual_installation base_url releases />
+    <release_history base_url releases />
+  </main>
