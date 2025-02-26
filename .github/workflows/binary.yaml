@@ -85,7 +85,7 @@ jobs:
 
   deploy-s3:
     runs-on: ubuntu-latest
-    needs: [binary, check-artifacts]
+    needs: binary
     permissions:
       contents: write
     steps:
@@ -138,6 +138,7 @@ jobs:
         run: |
           git config --global user.name 'Experimental generator'
           git config --global user.email 'dune-experimental@users.noreply.github.com'
+          git switch docs
           (git add metadata.json && \
           git commit -m "Experimental build $(date +'%Y-%m-%d')" && \
           git push) || echo "No new data" # Prevent from committing empty stuff
